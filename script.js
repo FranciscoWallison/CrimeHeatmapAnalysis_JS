@@ -33,7 +33,7 @@ async function loadCSV() {
             const date = columns[0].trim();
             const year = date.split('-')[0];
             const type = columns[1].trim();
-            const crimeTypeTranslation = crimeTranslations[type] || type; 
+            const translatedType = crimeTypeTranslation[type] || type; 
             const lat = parseFloat(columns[2].trim());
             const lng = parseFloat(columns[3].trim());
 
