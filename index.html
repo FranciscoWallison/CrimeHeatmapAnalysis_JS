@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Heatmap and Analysis</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #map { height: 500px; width: 100%; }
+        #chartContainer { width: 80%; margin: auto; }
+    </style>
+</head>
+<body>
+    <h2>Crime Heatmap</h2>
+    <div id="map"></div>
+
+    <h2>Crime Trend Analysis</h2>
+    <div id="chartContainer">
+        <canvas id="crimeChart"></canvas>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
