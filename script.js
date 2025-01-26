@@ -1,8 +1,10 @@
 let map;
 let heatLayer;
+let crimeChart;  // Variável global para armazenar o gráfico
 
 // Mapeamento dos tipos de crimes em inglês para português
 const crimeTypeTranslation = {
+    "DISTURBING THE PEACE": "PERTURBANDO A PAZ",
     "PROPERTY CRIMES": "Crimes contra o Patrimônio",
     "VIOLENT CRIMES": "Crimes Violentos",
     "DRUG OFFENSES": "Ofensas Relacionadas a Drogas",
@@ -123,7 +125,6 @@ function updateMap(crimeData) {
     }).addTo(map);
 }
 
-// Função para atualizar o gráfico de tendências
 function updateChart(crimeData) {
     const crimeCounts = {};
 
@@ -145,7 +146,13 @@ function updateChart(crimeData) {
     }));
 
     const ctx = document.getElementById('crimeChart').getContext('2d');
-    new Chart(ctx, {
+
+    // Destruir o gráfico existente antes de criar um novo
+    if (crimeChart) {
+        crimeChart.destroy();
+    }
+
+    crimeChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -154,8 +161,8 @@ function updateChart(crimeData) {
         options: {
             responsive: true,
             scales: {
-                x: { title: { display: true, text: 'Date' } },
-                y: { title: { display: true, text: 'Crime Count' } }
+                x: { title: { display: true, text: 'Data' } },
+                y: { title: { display: true, text: 'Quantidade de Crimes' } }
             }
         }
     });
@@ -163,7 +170,7 @@ function updateChart(crimeData) {
 
 // Função auxiliar para gerar cores aleatórias para o gráfico
 function getRandomColor() {
-    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    return `#${Math.floor(Math.random()*16777215).toString(16)}`;
 }
 
 // Carregar os dados ao iniciar a página
