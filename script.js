@@ -1,3 +1,6 @@
+let map;
+let heatLayer;
+
 // Função para carregar o CSV e processar os dados
 async function loadCSV() {
     try {
@@ -21,6 +24,7 @@ async function loadCSV() {
         }).filter(item => item !== null);
 
         populateFilters(crimeData);
+        initializeMap();
         updateVisualization(crimeData);
     } catch (error) {
         console.error("Error loading CSV:", error);
@@ -55,6 +59,16 @@ function populateFilters(crimeData) {
     typeSelect.addEventListener('change', () => updateVisualization(crimeData));
 }
 
+// Inicializa o mapa apenas uma vez
+function initializeMap() {
+    if (!map) {
+        map = L.map('map').setView([-3.73784, -38.5554], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+    }
+}
+
 // Função para atualizar o mapa e gráfico conforme filtros
 function updateVisualization(crimeData) {
     const selectedYear = document.getElementById('yearSelect').value;
@@ -72,10 +86,9 @@ function updateVisualization(crimeData) {
 
 // Função para atualizar o mapa de calor
 function updateMap(crimeData) {
-    const map = L.map('map').setView([-3.73784, -38.5554], 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-    }).addTo(map);
+    if (heatLayer) {
+        map.removeLayer(heatLayer);
+    }
 
     const heatData = crimeData.map(crime => [crime.lat, crime.lng, 1.0]);
     
@@ -84,7 +97,7 @@ function updateMap(crimeData) {
         return;
     }
 
-    L.heatLayer(heatData, {
+    heatLayer = L.heatLayer(heatData, {
         radius: 20,
         blur: 15,
         maxZoom: 14
