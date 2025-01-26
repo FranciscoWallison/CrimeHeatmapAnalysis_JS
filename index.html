@@ -11,10 +11,24 @@
     <style>
         #map { height: 500px; width: 100%; }
         #chartContainer { width: 80%; margin: auto; }
+        .filters { margin: 20px 0; }
     </style>
 </head>
 <body>
     <h2>Crime Heatmap</h2>
+    
+    <div class="filters">
+        <label for="yearSelect">Select Year:</label>
+        <select id="yearSelect">
+            <option value="all">All Years</option>
+        </select>
+
+        <label for="typeSelect">Select Crime Type:</label>
+        <select id="typeSelect">
+            <option value="all">All Types</option>
+        </select>
+    </div>
+
     <div id="map"></div>
 
     <h2>Crime Trend Analysis</h2>
