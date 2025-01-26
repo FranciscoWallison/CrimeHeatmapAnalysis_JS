@@ -1,41 +1,57 @@
 // Função para carregar o CSV e processar os dados
 async function loadCSV() {
-    const response = await fetch('policecalls.csv');
-    const data = await response.text();
-    
-    const crimeData = data.split('\n').slice(1).map(row => {
-        const [date, type, lat, lng] = row.split(',');
-        return { date, type, lat: parseFloat(lat), lng: parseFloat(lng) };
-    });
+    try {
+        const response = await fetch('policecalls.csv');
+        const data = await response.text();
+        
+        const crimeData = data.split('\n').slice(1).map(row => {
+            const columns = row.split(',');
 
-    initializeMap(crimeData);
-    plotCrimeChart(crimeData);
+            // Verificando se há dados suficientes na linha
+            if (columns.length < 4) return null;
+
+            const date = columns[0].trim();
+            const type = columns[1].trim();
+            const lat = parseFloat(columns[2].trim());
+            const lng = parseFloat(columns[3].trim());
+
+            // Verifica se lat e lng são valores numéricos válidos
+            if (isNaN(lat) || isNaN(lng)) {
+                console.warn(`Invalid data found and skipped: ${row}`);
+                return null;
+            }
+
+            return { date, type, lat, lng };
+        }).filter(item => item !== null);
+
+        console.log("Loaded Crime Data:", crimeData);
+
+        initializeMap(crimeData);
+        plotCrimeChart(crimeData);
+    } catch (error) {
+        console.error("Error loading CSV:", error);
+    }
 }
 
-// Inicializa o mapa de calor com ajustes para melhorar a visualização
+// Inicializa o mapa de calor
 function initializeMap(crimeData) {
     const map = L.map('map').setView([-3.73784, -38.5554], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
     }).addTo(map);
 
-    // Agrupando coordenadas semelhantes para maior intensidade em regiões com mais crimes
-    const heatMapData = crimeData.reduce((acc, crime) => {
-        const key = `${crime.lat.toFixed(3)},${crime.lng.toFixed(3)}`;
-        acc[key] = (acc[key] || 0) + 1;
-        return acc;
-    }, {});
+    const heatData = crimeData.map(crime => [crime.lat, crime.lng, 1.0]);
 
-    const heatPoints = Object.entries(heatMapData).map(([key, count]) => {
-        const [lat, lng] = key.split(',').map(Number);
-        return [lat, lng, count];
-    });
+    // Verificação adicional para evitar valores inválidos
+    if (heatData.length === 0) {
+        console.error("No valid heatmap data to display.");
+        return;
+    }
 
-    L.heatLayer(heatPoints, {
-        radius: 20,   // Ajuste do raio para melhor visualização
-        blur: 15,     // Nível de suavização
-        maxZoom: 14,  // Define o nível máximo de zoom para visualizar os pontos
-        max: Math.max(...Object.values(heatMapData)), // Ajuste da intensidade
+    L.heatLayer(heatData, {
+        radius: 25,
+        blur: 15,
+        maxZoom: 14
     }).addTo(map);
 }
 
