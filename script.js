@@ -1,6 +1,24 @@
 let map;
 let heatLayer;
 
+// Mapeamento dos tipos de crimes em inglês para português
+const crimeTypeTranslation = {
+    "PROPERTY CRIMES": "Crimes contra o Patrimônio",
+    "VIOLENT CRIMES": "Crimes Violentos",
+    "DRUG OFFENSES": "Ofensas Relacionadas a Drogas",
+    "THEFT": "Roubo",
+    "BURGLARY": "Arrombamento",
+    "VANDALISM": "Vandalismo",
+    "ASSAULT": "Agressão",
+    "FRAUD": "Fraude",
+    "HOMICIDE": "Homicídio",
+    "SEXUAL OFFENSES": "Ofensas Sexuais",
+    "OTHER": "Outros",
+    "ARSON": "Incêndio criminoso",
+    "VEHICLE THEFT": "Roubo de veículo",
+};
+
+
 // Função para carregar o CSV e processar os dados
 async function loadCSV() {
     try {
@@ -15,12 +33,13 @@ async function loadCSV() {
             const date = columns[0].trim();
             const year = date.split('-')[0];
             const type = columns[1].trim();
+            const crimeTypeTranslation = crimeTranslations[type] || type; 
             const lat = parseFloat(columns[2].trim());
             const lng = parseFloat(columns[3].trim());
 
             if (isNaN(lat) || isNaN(lng)) return null;
-
-            return { date, year, type, lat, lng };
+    
+            return { date, year, type: translatedType, lat, lng };
         }).filter(item => item !== null);
 
         populateFilters(crimeData);
@@ -75,7 +94,7 @@ function updateVisualization(crimeData) {
     const selectedType = document.getElementById('typeSelect').value;
 
     // Filtrar dados conforme seleção do usuário
-    const filteredData = crimeData.filter(crime => 
+    const filteredData = crimeData.filter(crime =>
         (selectedYear === 'all' || crime.year === selectedYear) &&
         (selectedType === 'all' || crime.type === selectedType)
     );
@@ -91,7 +110,7 @@ function updateMap(crimeData) {
     }
 
     const heatData = crimeData.map(crime => [crime.lat, crime.lng, 1.0]);
-    
+
     if (heatData.length === 0) {
         console.warn("No data available for selected filters.");
         return;
@@ -144,7 +163,7 @@ function updateChart(crimeData) {
 
 // Função auxiliar para gerar cores aleatórias para o gráfico
 function getRandomColor() {
-    return `#${Math.floor(Math.random()*16777215).toString(16)}`;
+    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 }
 
 // Carregar os dados ao iniciar a página

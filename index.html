@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crime Heatmap and Analysis</title>
+    <title>Mapa de Calor e Análise de Crimes</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
@@ -15,23 +15,23 @@
     </style>
 </head>
 <body>
-    <h2>Crime Heatmap</h2>
+    <h2>Mapa de Calor de Crimes</h2>
     
     <div class="filters">
-        <label for="yearSelect">Select Year:</label>
+        <label for="yearSelect">Selecione o Ano:</label>
         <select id="yearSelect">
-            <option value="all">All Years</option>
+            <option value="all">Todos os Anos</option>
         </select>
 
-        <label for="typeSelect">Select Crime Type:</label>
+        <label for="typeSelect">Selecione o Tipo de Crime:</label>
         <select id="typeSelect">
-            <option value="all">All Types</option>
+            <option value="all">Todos os Tipos</option>
         </select>
     </div>
 
     <div id="map"></div>
 
-    <h2>Crime Trend Analysis</h2>
+    <h2>Análise de Tendências de Crimes</h2>
     <div id="chartContainer">
         <canvas id="crimeChart"></canvas>
     </div>
